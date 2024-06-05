@@ -1,8 +1,9 @@
 package com.sports.teambuilder.services;
 
-import com.sports.teambuilder.dao.PlayerRepository;
+import com.sports.teambuilder.repository.postgresql.PlayerRepository;
 import com.sports.teambuilder.enums.SportsCategory;
 import com.sports.teambuilder.models.Player;
+import com.sports.teambuilder.dto.PlayerDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class PlayerService {
 
     @Autowired
-    public PlayerRepository playerRepository;
+    private PlayerRepository playerRepository;
 
     public List<Player> getAllPlayersFromDB() {
         log.info("Get List of all the players from db");
@@ -39,7 +40,11 @@ public class PlayerService {
             log.error("User need to pass the mobile Mobile Number in the request body");
             throw new IllegalArgumentException("Mobile number can't be empty or null");
         }
-        Optional<Player> existingPlayer = playerRepository.findByMobileNumber(player.getMobileNumber());
+        Optional<Player> existingPlayer = Optional.empty();
+        try {
+            existingPlayer = playerRepository.findByMobileNumber(player.getMobileNumber());
+        } catch (NullPointerException e) {
+        }
         if (existingPlayer.isPresent()) {
             log.error("Player with prvided mobile number is already present ");
             return existingPlayer.get();
@@ -47,4 +52,24 @@ public class PlayerService {
         return playerRepository.save(player);
     }
 
+    public void deletePlayer(PlayerDto playerDto) {
+        playerRepository.deleteByMobileNumber(playerDto.getMobileNumber());
+    }
+
+    public void deletePlayerByMobileNumber(String mobileNumber) {
+        playerRepository.deleteByMobileNumber(mobileNumber);
+    }
+
+    public Player updatePlayerInformation(Player player, String mobileNumber) {
+        Optional<Player> existingPlayer = playerRepository.findByMobileNumber(mobileNumber);
+        if (existingPlayer.isEmpty()) return new Player();
+        if (player.getName() != null) {
+            existingPlayer.get().setName(player.getName());
+        }
+        if (player.getIsActive() != null) existingPlayer.get().setIsActive(player.getIsActive());
+        if (player.getHomeGround() != null) existingPlayer.get().setHomeGround(player.getHomeGround());
+        if (player.getPrimarySport() != null) existingPlayer.get().setHomeGround(player.getPrimarySport());
+
+        return playerRepository.save(existingPlayer.get());
+    }
 }

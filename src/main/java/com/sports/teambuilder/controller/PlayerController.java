@@ -1,8 +1,8 @@
 package com.sports.teambuilder.controller;
 
-import com.sports.teambuilder.enums.SportsCategory;
 import com.sports.teambuilder.models.Player;
 import com.sports.teambuilder.services.PlayerService;
+import com.sports.teambuilder.dto.PlayerDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +18,14 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
-    @GetMapping("allPlayers")
-    public List<Player> getAllPlayers() {
-        log.info("Request list of all the players");
-        return playerService.getAllPlayersFromDB();
+    @DeleteMapping("/deletePlayer")
+    public void deletePlayer(@RequestBody PlayerDto playerDto) {
+        playerService.deletePlayer(playerDto);
+    }
+
+    @DeleteMapping("/deletePlayer/{mobileNumber}")
+    public void deletePlayerByMobileNumber(@PathVariable String mobileNumber) {
+        playerService.deletePlayerByMobileNumber(mobileNumber);
     }
 
     @GetMapping("/name/{name}")
@@ -37,6 +41,11 @@ public class PlayerController {
     @PostMapping("addPlayer")
     public Player addPlayer(@RequestBody Player player) {
         return playerService.savePlayerData(player);
+    }
+
+    @PutMapping("updatePlayer/{mobileNumber}")
+    public Player updatePlayerDetails(@RequestBody Player player, @PathVariable String mobileNumber) {
+        return playerService.updatePlayerInformation(player, mobileNumber);
     }
 
 }

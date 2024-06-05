@@ -2,9 +2,11 @@ package com.sports.teambuilder.controller;
 
 import com.sports.teambuilder.models.SportsClub;
 import com.sports.teambuilder.services.SportsClubService;
-import dto.PlayerDto;
+import com.sports.teambuilder.dto.PlayerDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,17 +21,27 @@ public class SportsClubController {
     private SportsClubService sportsClubService;
 
     @GetMapping("allClubs")
-    public List<SportsClub> getAllClubs() {
+    public ResponseEntity<List<SportsClub>> getAllClubs() {
         log.info("Request list of all the players");
-        return sportsClubService.getAllPlayersFromDB();
+        return new ResponseEntity<>(sportsClubService.getAllPlayersFromDB(), HttpStatus.OK);
     }
 
     @GetMapping("/name/{name}")
-    public Optional<List<SportsClub>> getClubByName(@PathVariable String name) {
-        return sportsClubService.findByName(name);
+    public ResponseEntity<SportsClub> getClubByName(@PathVariable String name) {
+            return new ResponseEntity<>(sportsClubService.findByName(name), HttpStatus.OK);
     }
 
-    @GetMapping("/name/{name}/playerList")
+    @DeleteMapping("delete/name/{name}")
+    public void deleteClubByName(@PathVariable String name) {
+        sportsClubService.deleteClubByName(name);
+    }
+
+    @DeleteMapping("delete/id/{id}")
+    public void deleteClubById(@PathVariable Integer id) {
+        sportsClubService.deleteClubById(id);
+    }
+
+    @GetMapping("/name/{clubName}/playerList")
     public Optional<List<PlayerDto>> getListOfPlayersAssociateWithClub(@PathVariable String clubName) {
         Optional<List<PlayerDto>> playerDtos;
         try {
@@ -41,6 +53,26 @@ public class SportsClubController {
         }
     }
 
+    @PutMapping("/name/{clubName}")
+    public SportsClub updateClubPlayerDetails(@PathVariable String clubName, @RequestBody PlayerDto playerdto) {
+        return sportsClubService.addPlayerToClub(clubName, playerdto);
+    }
+
+    @PutMapping("/name/{clubName}/{winValue}")
+    public SportsClub updateWin(@PathVariable String clubName, @PathVariable Integer winValue) {
+        return sportsClubService.updateWinNumber(clubName, winValue);
+    }
+
+    @PutMapping("/name/{clubName}/managerDetails")
+    public SportsClub updateManagerDetails(@PathVariable String clubName, @RequestBody PlayerDto playerDto) {
+        return sportsClubService.updateClubManagerInformation(clubName, playerDto);
+    }
+
+    @PutMapping("/name/{clubName}/captainDetails")
+    public SportsClub updateCaptainDetails(@PathVariable String clubName, @RequestBody PlayerDto playerDto) {
+        return sportsClubService.updateCaptainInformation(clubName, playerDto);
+    }
+
     @GetMapping("/sport/{sport}")
     public Optional<List<SportsClub>> getClubBySport(@PathVariable String sport) {
         return sportsClubService.findByPrimarySport(sport.toUpperCase());
@@ -50,6 +82,5 @@ public class SportsClubController {
     public SportsClub addSportsClub(@RequestBody SportsClub sportsClub) {
         return sportsClubService.saveClubData(sportsClub);
     }
-
 
 }

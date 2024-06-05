@@ -1,7 +1,5 @@
 package com.sports.teambuilder.models;
 
-import com.sports.teambuilder.enums.SportsCategory;
-import dto.PlayerDto;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,11 +13,14 @@ public class SportsClub {
     private Integer id;
     @Column(unique = true)
     private String name;
-    private String contactNumber;
-    private SportsCategory sport;
+    private String sport;
     private String homeGround;
+    private String manager;
+    private String captain;
+    private String managerContactNumber;
+    private String captainContactNumber;
     private Integer totalWins;
     private Integer totalLosses;
-    private ArrayList<PlayerDto> associatedPlayers;
+    private ArrayList<String> associatedPlayersMobileNumbers;
 
 }
