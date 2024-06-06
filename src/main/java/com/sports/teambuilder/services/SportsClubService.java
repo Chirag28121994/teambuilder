@@ -1,7 +1,7 @@
 package com.sports.teambuilder.services;
 
-import com.sports.teambuilder.repository.postgresql.ClubRepository;
-import com.sports.teambuilder.repository.postgresql.PlayerRepository;
+import com.sports.teambuilder.repository.mongo.ClubRepository;
+import com.sports.teambuilder.repository.mongo.PlayerRepository;
 import com.sports.teambuilder.enums.SportsCategory;
 import com.sports.teambuilder.models.Player;
 import com.sports.teambuilder.models.SportsClub;
@@ -45,7 +45,12 @@ public class SportsClubService {
     }
 
     public SportsClub saveClubData(SportsClub sportsClub) {
-        return clubRepository.save(sportsClub);
+        Optional<SportsClub> existingClub = clubRepository.findClubByName(sportsClub.getName());
+        if (existingClub.isEmpty()) {
+            return clubRepository.save(sportsClub);
+        }
+        log.error("Club with name {} is already present ", sportsClub.getName());
+        return existingClub.get();
     }
 
     public Optional<List<PlayerDto>> getAllPlayersOfGivenClub(String clubName) {
@@ -98,7 +103,7 @@ public class SportsClubService {
         clubRepository.deleteByName(name);
     }
 
-    public void deleteClubById(Integer id) {
+    public void deleteClubById(String id) {
         clubRepository.deleteById(id);
     }
 

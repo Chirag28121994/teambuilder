@@ -2,8 +2,8 @@ package com.sports.teambuilder.models;
 
 import com.sports.teambuilder.dto.PlayerParticipatedDto;
 import com.sports.teambuilder.dto.TeamDto;
-import jakarta.persistence.Id;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;

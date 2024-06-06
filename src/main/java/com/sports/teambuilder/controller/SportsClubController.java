@@ -37,7 +37,7 @@ public class SportsClubController {
     }
 
     @DeleteMapping("delete/id/{id}")
-    public void deleteClubById(@PathVariable Integer id) {
+    public void deleteClubById(@PathVariable String id) {
         sportsClubService.deleteClubById(id);
     }
 

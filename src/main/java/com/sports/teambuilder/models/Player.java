@@ -1,16 +1,17 @@
 package com.sports.teambuilder.models;
 
-import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity(name = "players")
+@Document(collection = "player_data")
 @Data
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
     private String name;
-    @Column(unique = true)
+    @Indexed(unique = true)
     private String mobileNumber;
     private Boolean isActive;
     private String homeGround;

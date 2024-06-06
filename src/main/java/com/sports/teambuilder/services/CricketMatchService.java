@@ -43,7 +43,13 @@ public class CricketMatchService {
         cricketMatch.setMatchRequestDateTime(LocalDateTime.now());
         cricketMatch.setMatchCompleted(false);
 
-        Optional<List<PlayerDto>> yourClubPlayerList = sportsClubService.getAllPlayersOfGivenClub(cricketMatchRequest.getYourClubName());
+        Optional<List<PlayerDto>> yourClubPlayerList = Optional.empty();
+
+        try {
+            yourClubPlayerList = sportsClubService.getAllPlayersOfGivenClub(cricketMatchRequest.getYourClubName());
+        } catch (Exception e) {
+            log.error("Failure in fetching your team list");
+        }
 
         // get opposition club's team
         Optional<List<PlayerDto>> oppositionClubPlayerList = Optional.empty();
@@ -53,7 +59,10 @@ public class CricketMatchService {
             log.error("Failure in fetching opponent's team list");
         }
 
-        ArrayList<PlayerParticipatedDto> yourPlayerList = getPlayersInformationFromListOfPlayerParticipatedDto(yourClubPlayerList);
+        ArrayList<PlayerParticipatedDto> yourPlayerList = new ArrayList<>();
+        if (yourClubPlayerList.isPresent())
+            yourPlayerList = getPlayersInformationFromListOfPlayerParticipatedDto(yourClubPlayerList);
+
         ArrayList<PlayerParticipatedDto> opponentPlayerList = new ArrayList<>();
         if (oppositionClubPlayerList.isPresent())
             opponentPlayerList = getPlayersInformationFromListOfPlayerParticipatedDto(oppositionClubPlayerList);

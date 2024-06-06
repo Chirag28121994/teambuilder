@@ -1,7 +1,7 @@
 package com.sports.teambuilder.predicates;
 
-import com.sports.teambuilder.repository.postgresql.ClubRepository;
-import com.sports.teambuilder.repository.postgresql.PlayerRepository;
+import com.sports.teambuilder.repository.mongo.ClubRepository;
+import com.sports.teambuilder.repository.mongo.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

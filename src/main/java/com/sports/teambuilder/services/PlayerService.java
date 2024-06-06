@@ -1,6 +1,6 @@
 package com.sports.teambuilder.services;
 
-import com.sports.teambuilder.repository.postgresql.PlayerRepository;
+import com.sports.teambuilder.repository.mongo.PlayerRepository;
 import com.sports.teambuilder.enums.SportsCategory;
 import com.sports.teambuilder.models.Player;
 import com.sports.teambuilder.dto.PlayerDto;
@@ -46,7 +46,7 @@ public class PlayerService {
         } catch (NullPointerException e) {
         }
         if (existingPlayer.isPresent()) {
-            log.error("Player with prvided mobile number is already present ");
+            log.error("Player with mobile number {} is already present ", player.getMobileNumber());
             return existingPlayer.get();
         }
         return playerRepository.save(player);
